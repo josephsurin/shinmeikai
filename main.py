@@ -1,5 +1,5 @@
-import sys
 import json
+import difflib
 
 def init_dict():
 	smk_dict = []
@@ -11,9 +11,15 @@ def init_dict():
 
 def main():
 	smk_dict = init_dict()
-	search_q = sys.argv[1]
-	match = next((w for w in smk_dict if w[0] == search_q), None)
-	print(match)
+	while True:
+		cmdargs = input('command:  ')
+		cmd = cmdargs.split()[0]
+		if cmd == 'exit':
+			break
+		if cmd in ['s', 'search']:
+			search_q = cmdargs.split()[1]
+			match = [w for w in smk_dict if difflib.SequenceMatcher(a = w[0], b = search_q).ratio() > 0.60 or difflib.SequenceMatcher(a = w[1], b = search_q).ratio() > 0.60]
+			print(match)
 
 if __name__ == '__main__':
 	main()
