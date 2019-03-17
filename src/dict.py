@@ -16,4 +16,7 @@ def dict_search(search_q, smk_dict, limit=25):
                 matches = [m for m in ((difflib.SequenceMatcher(a = w[1], b = search_q).ratio(), w) for w in smk_dict) if m[0] > 0.7]
         else:
                 matches = [m for m in ((difflib.SequenceMatcher(a = w[0], b = search_q).ratio(), w) for w in smk_dict) if m[0] > 0.3]
-        return [m[1] for m in sorted(matches, key=lambda m: m[0], reverse=True)[:limit]]
+        return format_results([m[1] for m in sorted(matches, key=lambda m: m[0], reverse=True)[:limit]])
+
+def format_results(matches):
+        return [(m[0], m[1], m[5]) for m in matches]
