@@ -18,7 +18,7 @@ class ShinmeikaiClient(discord.Client):
                         return
 
                 if re.match(r'^(!s|ｓ|ｓ)', message.content): 
-                        await commands.search(message, smk_dict)
+                        await commands.search(self, message, smk_dict)
 
 client = ShinmeikaiClient()
 client.run(os.getenv('TOKEN'))

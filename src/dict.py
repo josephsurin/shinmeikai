@@ -19,4 +19,4 @@ def dict_search(search_q, smk_dict, limit=25):
         return format_results([m[1] for m in sorted(matches, key=lambda m: m[0], reverse=True)[:limit]])
 
 def format_results(matches):
-        return [(m[0], m[1], m[5]) for m in matches]
+        return [(m[0], m[1], m[5][0]) for m in matches]
