@@ -27,12 +27,26 @@ async def search(client, message, smk_dict):
         await msg.add_reaction('⬅')
         await msg.add_reaction('➡')
 
-        reaction, user = await client.wait_for('reaction_add', check = lambda r,u: u == message.author)
-        print(reaction, str(reaction), user, message.author)
-        if str(reaction) == '⬅': current_page -= 1
-        if str(reaction) == '➡': current_page += 1
-        embed = create_page(pages[current_page], search_q, current_page + 1, current_page + 1 + len(pages))
-        await msg.edit(embed=embed)
+        return (msg.id, SearchObj(pages, search_q, msg))
+
+class SearchObj:
+        def __init__(self, pages, search_q, msg):
+                self.pages = pages
+                self.msg = msg
+                self.search_q = search_q
+                self.current_page = 0
+
+        async def go_next(self):
+                if self.current_page == len(self.pages): return
+                self.current_page += 1
+                embed = create_page(self.pages[self.current_page], self.search_q, self.current_page + 1, len(self.pages) + 1)
+                await self.msg.edit(embed=embed)
+
+        async def go_prev(self):
+                if self.current_page == 0: return
+                self.current_page -= 1
+                embed = create_page(self.pages[self.current_page], self.search_q, self.current_page + 1, len(self.pages) + 1)
+                await self.msg.edit(embed=embed)
 
 def create_page(page, search_q, page_num, total_pages):
         embed=discord.Embed(description=f'{search_q} (page {page_num} of {total_pages})', color=0x62f7f7)
