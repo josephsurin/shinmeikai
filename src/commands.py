@@ -12,6 +12,11 @@ async def search(client, message, smk_dict):
         dur = end - start
         print(f'found {len(matches)} words in {dur} seconds')
 
+        if len(matches) == 0:
+                embed=discord.Embed(description=f'No results found for **{search_q}**!', color=0x62f7f7)
+                await message.channel.send(embed=embed)
+                return None
+
         pages = [[matches[0]]]
         current_page = 0
         for i in range(1, len(matches)):
