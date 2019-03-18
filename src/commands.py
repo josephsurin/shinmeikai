@@ -37,15 +37,15 @@ class SearchObj:
                 self.current_page = 0
 
         async def go_next(self):
-                if self.current_page == len(self.pages): return
+                if self.current_page == len(self.pages)-1: return
                 self.current_page += 1
-                embed = create_page(self.pages[self.current_page], self.search_q, self.current_page + 1, len(self.pages) + 1)
+                embed = create_page(self.pages[self.current_page], self.search_q, self.current_page + 1, len(self.pages))
                 await self.msg.edit(embed=embed)
 
         async def go_prev(self):
                 if self.current_page == 0: return
                 self.current_page -= 1
-                embed = create_page(self.pages[self.current_page], self.search_q, self.current_page + 1, len(self.pages) + 1)
+                embed = create_page(self.pages[self.current_page], self.search_q, self.current_page + 1, len(self.pages))
                 await self.msg.edit(embed=embed)
 
 def create_page(page, search_q, page_num, total_pages):
@@ -57,3 +57,10 @@ def create_page(page, search_q, page_num, total_pages):
                 embed.add_field(name=f'{kanji} ({reading})', value=f'{definition}', inline=False)
                 
         return embed
+
+async def handle_reaction_pagination(reaction, search_obj):
+        if search_obj:
+                if str(reaction.emoji)  == '⬅':
+                        await search_obj.go_prev()
+                if str(reaction.emoji) == '➡':
+                        await search_obj.go_next()
