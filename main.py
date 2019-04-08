@@ -29,7 +29,7 @@ class ShinmeikaiClient(discord.Client):
         async def on_message(self, message):
                 if message.author == self.user: return
 
-                if re.match(r'^(s|ｓ|ｓ)', message.content): 
+                if re.match(r'^(s|ｓ|ｓ)\s+', message.content): 
                         sres = await commands.search(self, message, smk_dict)
                         if sres:
                                 (msgid, search_obj) = sres
