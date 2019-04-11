@@ -29,11 +29,14 @@ class ShinmeikaiClient(discord.Client):
         async def on_message(self, message):
                 if message.author == self.user: return
 
-                if re.match(r'^(s|ｓ|ｓ)\s+', message.content): 
+                if re.match(r'^(S|s|ｓ)\s+', message.content): 
                         sres = await commands.search(self, message, smk_dict)
                         if sres:
                                 (msgid, search_obj) = sres
                                 search_cache[msgid] = search_obj
+
+                if re.match(r'^(chart|ｃ)', message.content):
+                        await commands.chart(self, message)
 
 client = ShinmeikaiClient()
 client.run(os.getenv('TOKEN'))

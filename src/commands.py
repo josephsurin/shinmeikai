@@ -69,3 +69,6 @@ async def handle_reaction_pagination(reaction, search_obj):
                         await search_obj.go_prev()
                 if str(reaction.emoji) == '➡':
                         await search_obj.go_next()
+
+async def chart(client, message):
+        await message.channel.send(file=discord.File('./src/assets/pitch_accent_chart.png'))
