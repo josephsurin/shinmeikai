@@ -2,10 +2,13 @@ import discord
 import time
 from functools import reduce
 from src.dict import dict_search
+from src.util import is_kana
+from romkan import to_hiragana
 
 async def search(client, message, smk_dict):
         search_q = message.content.split()[1]
-
+        if not is_kana(search_q[0]):
+            search_q = to_hiragana(search_q)
         start = time.time()
         matches = dict_search(search_q, smk_dict)
         end = time.time()
