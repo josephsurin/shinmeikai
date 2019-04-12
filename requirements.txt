@@ -1,3 +1,4 @@
 python-dotenv==0.10.1
 expiringdict==1.1.4
 -e git+https://github.com/Rapptz/discord.py@rewrite#egg=discordpy
+romkan==0.2.1
