@@ -38,5 +38,8 @@ class ShinmeikaiClient(discord.Client):
                 if re.match(r'^(chart|ｃ)', message.content):
                         await commands.chart(self, message)
 
+                if re.match(r'^(o|お)\s+', message.content):
+                        await commands.ojad_index(self, message)
+
 client = ShinmeikaiClient()
 client.run(os.getenv('TOKEN'))
