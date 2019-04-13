@@ -87,37 +87,40 @@ async def ojad_index(client, message):
     search_q = message.content.split()[1]
     if not is_kana(search_q[0]):
         search_q = to_hiragana(search_q)
- 
-    options = webdriver.ChromeOptions()
-    options.add_argument('--ignore-certificate-errors')
-    options.add_argument("headless")
-    options.add_argument('--lang=ja')
-    options.add_argument("window-size=1600x1000")
-    options.binary_location = os.getenv('CHROME_BIN')
-    driver = webdriver.Chrome(options=options, executable_path=os.getenv('CHROMEDRIVER_PATH'))
-     
-    driver.get('http://www.gavo.t.u-tokyo.ac.jp/ojad/search/index/display:print/sortprefix:accent/narabi1:kata_asc/narabi2:accent_asc/narabi3:mola_asc/yure:visible/curve:invisible/details:invisible/limit:20/word:'+search_q)
+    try:
+        options = webdriver.ChromeOptions()
+        options.add_argument('--ignore-certificate-errors')
+        options.add_argument("headless")
+        options.add_argument('--lang=ja')
+        options.add_argument("window-size=1600x1000")
+        options.binary_location = os.getenv('CHROME_BIN')
+        driver = webdriver.Chrome(options=options, executable_path=os.getenv('CHROMEDRIVER_PATH'))
+         
+        driver.get('http://www.gavo.t.u-tokyo.ac.jp/ojad/search/index/display:print/sortprefix:accent/narabi1:kata_asc/narabi2:accent_asc/narabi3:mola_asc/yure:visible/curve:invisible/details:invisible/limit:20/word:'+search_q)
 
-    element = driver.find_element_by_xpath("//table[@id='word_table']");
+        element = driver.find_element_by_xpath("//table[@id='word_table']");
 
-    location = element.location;
-    size = element.size;
-    
-    img_filename = 'tmp/' + str(getrandbits(32)) + '.png'
+        location = element.location;
+        size = element.size;
+        
+        img_filename = 'tmp/' + str(getrandbits(32)) + '.png'
 
-    driver.save_screenshot(img_filename);
+        driver.save_screenshot(img_filename);
 
-    driver.close()
+        driver.close()
 
-    x = location['x'];
-    y = location['y'];
-    width = location['x']+size['width'];
-    height = location['y']+size['height'];
-    im = Image.open(img_filename)
-    im = im.crop((int(x), int(y), int(width), int(height)))
-    im.save(img_filename)
-    print('saved image to', img_filename)
+        x = location['x'];
+        y = location['y'];
+        width = location['x']+size['width'];
+        height = location['y']+size['height'];
+        im = Image.open(img_filename)
+        im = im.crop((int(x), int(y), int(width), int(height)))
+        im.save(img_filename)
+        print('saved image to', img_filename)
 
-    await message.channel.send(file=discord.File(img_filename))
+        await message.channel.send(file=discord.File(img_filename))
 
-    os.remove(img_filename)
+        os.remove(img_filename)
+    except:
+        embed=discord.Embed(description=f'No results found for **{search_q}**!', color=0x62f7f7)
+        await message.channel.send(embed=embed)
