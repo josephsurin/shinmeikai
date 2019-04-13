@@ -91,6 +91,7 @@ async def ojad_index(client, message):
     options = webdriver.ChromeOptions()
     options.add_argument('--ignore-certificate-errors')
     options.add_argument("headless")
+    options.add_argument('--lang=ja')
     options.add_argument("window-size=1600x1000")
     options.binary_location = os.getenv('CHROME_BIN')
     driver = webdriver.Chrome(options=options, executable_path=os.getenv('CHROMEDRIVER_PATH'))
