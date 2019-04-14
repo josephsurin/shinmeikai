@@ -105,7 +105,7 @@ async def ojad_index(client, message):
         
         img_filename = 'tmp/' + str(getrandbits(32)) + '.png'
 
-        driver.save_screenshot(img_filename);
+        driver.save_screenshot(img_filename)
 
         driver.close()
 
@@ -124,3 +124,56 @@ async def ojad_index(client, message):
     except:
         embed=discord.Embed(description=f'No results found for **{search_q}**!', color=0x62f7f7)
         await message.channel.send(embed=embed)
+
+from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+
+async def ojad_phrase(client, message):
+        search_q = ''.join(message.content.split()[1:])
+        if not is_kana(search_q[0]):
+            search_q = to_hiragana(search_q)
+        try:
+            options = webdriver.ChromeOptions()
+            options.add_argument('--ignore-certificate-errors')
+            options.add_argument("headless")
+            options.add_argument("window-size=1600x6000")
+            options.binary_location = os.getenv('CHROME_BIN')
+            driver = webdriver.Chrome(options=options, executable_path=os.getenv('CHROMEDRIVER_PATH'))
+             
+            driver.get('https://www.gavo.t.u-tokyo.ac.jp/ojad/phrasing/index')
+            search_element = driver.find_element_by_id('PhrasingText')
+            search_element.send_keys(search_q)
+            search_element.submit()
+
+            WebDriverWait(driver, 8).until(EC.visibility_of_element_located((By.ID, 'phrasing_main')))
+
+            element = driver.find_element_by_id("phrasing_main")
+
+            location = element.location;
+            size = element.size;
+
+            img_filename = 'tmp/' + str(getrandbits(32)) + '.png'
+
+            driver.save_screenshot(img_filename)
+
+            driver.close()
+
+            x = location['x'];
+            y = location['y'];
+            width = location['x']+size['width'];
+            height = location['y']+size['height'];
+            im = Image.open(img_filename)
+            im = im.crop((int(x), int(y)+55, int(width), int(height)-50))
+            im.save(img_filename)
+
+            print('saved image to', img_filename)
+
+            await message.channel.send(file=discord.File(img_filename))
+
+            os.remove(img_filename)
+        except Exception as e:
+            print(e)
+            embed=discord.Embed(description=f'An error occured while trying to query for the OJAD phrasing for **{search_q}**!', color=0x62f7f7)
+            await message.channel.send(embed=embed)

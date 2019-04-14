@@ -40,6 +40,7 @@ class ShinmeikaiClient(discord.Client):
 
                 if re.match(r'^(o|お)\s+', message.content):
                         await commands.ojad_index(self, message)
-
+                if re.match(r'^(p|ｐ)\s+', message.content):
+                        await commands.ojad_phrase(self, message)
 client = ShinmeikaiClient()
 client.run(os.getenv('TOKEN'))
